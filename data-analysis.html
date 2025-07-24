@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI学习平台 - 数据分析面板</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            opacity: 0.9;
+            font-size: 1.1rem;
+        }
+        
+        .dashboard {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            padding: 30px;
+        }
+        
+        .panel {
+            background: #f8fafc;
+            border-radius: 10px;
+            padding: 25px;
+            border: 1px solid #e2e8f0;
+        }
+        
+        .panel h3 {
+            color: #1e293b;
+            margin-bottom: 20px;
+            font-size: 1.4rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .config-section {
+            margin-bottom: 25px;
+        }
+        
+        .config-section label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #374151;
+        }
+        
+        .config-section input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+        
+        .btn {
+            background: #4f46e5;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+            margin: 5px;
+        }
+        
+        .btn:hover {
+            background: #4338ca;
+            transform: translateY(-1px);
+        }
+        
+        .btn-success {
+            background: #10b981;
+        }
+        
+        .btn-success:hover {
+            background: #059669;
+        }
+        
+        .btn-warning {
+            background: #f59e0b;
+        }
+        
+        .btn-warning:hover {
+            background: #d97706;
+        }
+        
+        .status {
+            padding: 10px 15px;
+            border-radius: 6px;
+            margin: 10px 0;
+            font-weight: 500;
+        }
+        
+        .status.success {
+            background: #d1fae5;
+            color: #065f46;
+            border: 1px solid #a7f3d0;
+        }
+        
+        .status.error {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fecaca;
+        }
+        
+        .status.info {
+            background: #dbeafe;
+            color: #1e40af;
+            border: 1px solid #93c5fd;
+        }
+        
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+        
+        .data-table th,
+        .data-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        
+        .data-table th {
+            background: #f3f4f6;
+            font-weight: 600;
+            color: #374151;
+        }
+        
+        .data-table tr:hover {
+            background: #f9fafb;
+        }
+        
+        .export-section {
+            grid-column: 1 / -1;
+            background: #fefce8;
+            border: 1px solid #fde047;
+        }
+        
+        .export-section h3 {
+            color: #a16207;
+        }
+        
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #f3f3f3;
+            border-top: 2px solid #4f46e5;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 10px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .hidden {
+            display: none !important;
+        }
+        
+        .full-width {
+            grid-column: 1 / -1;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📊 数据分析面板</h1>
+            <p>AI学习平台聊天记录分析与优化工具</p>
+        </div>
+        
+        <div class="dashboard">
+            <!-- 配置面板 -->
+            <div class="panel">
+                <h3>🔧 Supabase 配置</h3>
+                <div class="config-section">
+                    <label for="supabase-url">Supabase URL:</label>
+                    <input type="text" id="supabase-url" placeholder="https://xxxxx.supabase.co">
+                </div>
+                <div class="config-section">
+                    <label for="supabase-key">Supabase Key:</label>
+                    <input type="text" id="supabase-key" placeholder="eyJ...">
+                </div>
+                <button class="btn" onclick="connectSupabase()">连接数据库</button>
+                <div id="connection-status"></div>
+            </div>
+            
+            <!-- 统计面板 -->
+            <div class="panel">
+                <h3>📈 数据统计</h3>
+                <div id="stats-content">
+                    <p>请先连接数据库</p>
+                </div>
+                <button class="btn btn-success" onclick="loadStats()" id="load-stats-btn" disabled>刷新统计</button>
+            </div>
+            
+            <!-- 用户分析 -->
+            <div class="panel">
+                <h3>👥 用户分析</h3>
+                <div id="user-analysis">
+                    <p>请先连接数据库</p>
+                </div>
+                <button class="btn" onclick="analyzeUsers()" id="analyze-users-btn" disabled>分析用户行为</button>
+            </div>
+            
+            <!-- 问题分类 -->
+            <div class="panel">
+                <h3>❓ 常见问题</h3>
+                <div id="common-questions">
+                    <p>请先连接数据库</p>
+                </div>
+                <button class="btn" onclick="categorizeQuestions()" id="categorize-btn" disabled>分类问题</button>
+            </div>
+            
+            <!-- 数据导出 -->
+            <div class="panel export-section full-width">
+                <h3>📥 数据导出</h3>
+                <p>导出聊天记录用于进一步分析或训练数据准备</p>
+                <div style="margin: 20px 0;">
+                    <label>
+                        <input type="date" id="start-date"> 开始日期
+                    </label>
+                    <label style="margin-left: 20px;">
+                        <input type="date" id="end-date"> 结束日期
+                    </label>
+                </div>
+                <button class="btn btn-warning" onclick="exportData('json')" id="export-json-btn" disabled>导出 JSON</button>
+                <button class="btn btn-warning" onclick="exportData('csv')" id="export-csv-btn" disabled>导出 CSV</button>
+                <button class="btn btn-warning" onclick="generateQA()" id="generate-qa-btn" disabled>生成 Q&A 数据集</button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        let supabase = null;
+        
+        // 连接 Supabase
+        async function connectSupabase() {
+            const url = document.getElementById('supabase-url').value;
+            const key = document.getElementById('supabase-key').value;
+            const statusDiv = document.getElementById('connection-status');
+            
+            if (!url || !key) {
+                statusDiv.innerHTML = '<div class="status error">请填写完整的 URL 和 Key</div>';
+                return;
+            }
+            
+            statusDiv.innerHTML = '<div class="status info"><span class="loading"></span>连接中...</div>';
+            
+            try {
+                const { createClient } = await import('https://cdn.skypack.dev/@supabase/supabase-js@2');
+                supabase = createClient(url, key);
+                
+                // 测试连接
+                const { data, error } = await supabase.from('chat_sessions').select('count', { count: 'exact', head: true });
+                
+                if (error) throw error;
+                
+                statusDiv.innerHTML = '<div class="status success">✅ 连接成功！</div>';
+                enableButtons();
+                loadStats();
+            } catch (error) {
+                console.error('连接错误:', error);
+                statusDiv.innerHTML = '<div class="status error">❌ 连接失败: ' + error.message + '</div>';
+            }
+        }
+        
+        // 启用按钮
+        function enableButtons() {
+            document.getElementById('load-stats-btn').disabled = false;
+            document.getElementById('analyze-users-btn').disabled = false;
+            document.getElementById('categorize-btn').disabled = false;
+            document.getElementById('export-json-btn').disabled = false;
+            document.getElementById('export-csv-btn').disabled = false;
+            document.getElementById('generate-qa-btn').disabled = false;
+        }
+        
+        // 加载统计数据
+        async function loadStats() {
+            if (!supabase) return;
+            
+            const statsContent = document.getElementById('stats-content');
+            statsContent.innerHTML = '<div class="status info"><span class="loading"></span>加载统计数据...</div>';
+            
+            try {
+                // 获取基础统计
+                const { data: sessions } = await supabase.from('chat_sessions').select('*');
+                const { data: messages } = await supabase.from('chat_messages').select('*');
+                const { data: profiles } = await supabase.from('user_profiles').select('*');
+                
+                const totalSessions = sessions?.length || 0;
+                const totalMessages = messages?.length || 0;
+                const totalUsers = profiles?.length || 0;
+                const avgMessagesPerSession = totalSessions > 0 ? (totalMessages / totalSessions).toFixed(1) : 0;
+                
+                // 计算今日活跃用户
+                const today = new Date().toISOString().split('T')[0];
+                const todayMessages = messages?.filter(msg => 
+                    msg.timestamp.startsWith(today)
+                ).length || 0;
+                
+                statsContent.innerHTML = `
+                    <table class="data-table">
+                        <tr><td><strong>总用户数</strong></td><td>${totalUsers}</td></tr>
+                        <tr><td><strong>总会话数</strong></td><td>${totalSessions}</td></tr>
+                        <tr><td><strong>总消息数</strong></td><td>${totalMessages}</td></tr>
+                        <tr><td><strong>今日消息数</strong></td><td>${todayMessages}</td></tr>
+                        <tr><td><strong>平均会话长度</strong></td><td>${avgMessagesPerSession} 条消息</td></tr>
+                    </table>
+                `;
+            } catch (error) {
+                console.error('加载统计失败:', error);
+                statsContent.innerHTML = '<div class="status error">加载失败: ' + error.message + '</div>';
+            }
+        }
+        
+        // 分析用户行为
+        async function analyzeUsers() {
+            if (!supabase) return;
+            
+            const analysisDiv = document.getElementById('user-analysis');
+            analysisDiv.innerHTML = '<div class="status info"><span class="loading"></span>分析用户行为...</div>';
+            
+            try {
+                // 获取用户活跃度数据
+                const { data: messages } = await supabase
+                    .from('chat_messages')
+                    .select('user_id, message_type, timestamp')
+                    .order('timestamp', { ascending: false });
+                
+                if (!messages) throw new Error('无法获取消息数据');
+                
+                // 统计用户活跃度
+                const userStats = {};
+                messages.forEach(msg => {
+                    if (!userStats[msg.user_id]) {
+                        userStats[msg.user_id] = { total: 0, questions: 0, lastActive: msg.timestamp };
+                    }
+                    userStats[msg.user_id].total++;
+                    if (msg.message_type === 'user') {
+                        userStats[msg.user_id].questions++;
+                    }
+                });
+                
+                // 找出最活跃的用户
+                const topUsers = Object.entries(userStats)
+                    .sort(([,a], [,b]) => b.total - a.total)
+                    .slice(0, 5);
+                
+                let html = '<h4>👑 最活跃用户 Top 5</h4><table class="data-table">';
+                html += '<tr><th>用户ID</th><th>总消息数</th><th>提问数</th><th>最后活跃</th></tr>';
+                
+                topUsers.forEach(([userId, stats]) => {
+                    const shortId = userId.substring(0, 8) + '...';
+                    const lastActive = new Date(stats.lastActive).toLocaleDateString('zh-CN');
+                    html += `<tr><td>${shortId}</td><td>${stats.total}</td><td>${stats.questions}</td><td>${lastActive}</td></tr>`;
+                });
+                
+                html += '</table>';
+                analysisDiv.innerHTML = html;
+                
+            } catch (error) {
+                console.error('分析用户失败:', error);
+                analysisDiv.innerHTML = '<div class="status error">分析失败: ' + error.message + '</div>';
+            }
+        }
+        
+        // 分类常见问题
+        async function categorizeQuestions() {
+            if (!supabase) return;
+            
+            const questionsDiv = document.getElementById('common-questions');
+            questionsDiv.innerHTML = '<div class="status info"><span class="loading"></span>分析常见问题...</div>';
+            
+            try {
+                // 获取用户消息
+                const { data: userMessages } = await supabase
+                    .from('chat_messages')
+                    .select('content')
+                    .eq('message_type', 'user')
+                    .order('timestamp', { ascending: false })
+                    .limit(100);
+                
+                if (!userMessages) throw new Error('无法获取用户消息');
+                
+                // 简单的关键词分类
+                const categories = {
+                    '课程问题': ['课程', '学习', '教程', '怎么学', '如何学', '第几课'],
+                    '技术问题': ['代码', '编程', 'API', '接口', '错误', 'bug', '调试'],
+                    '操作问题': ['怎么用', '如何', '操作', '步骤', '教程', '方法'],
+                    '平台问题': ['登录', '注册', '账号', '密码', '无法', '打不开']
+                };
+                
+                const categoryCounts = Object.keys(categories).reduce((acc, cat) => {
+                    acc[cat] = 0;
+                    return acc;
+                }, {});
+                
+                userMessages.forEach(msg => {
+                    const content = msg.content.toLowerCase();
+                    Object.entries(categories).forEach(([category, keywords]) => {
+                        if (keywords.some(keyword => content.includes(keyword))) {
+                            categoryCounts[category]++;
+                        }
+                    });
+                });
+                
+                let html = '<h4>📊 问题分类统计</h4><table class="data-table">';
+                html += '<tr><th>问题类别</th><th>出现次数</th><th>占比</th></tr>';
+                
+                const total = Object.values(categoryCounts).reduce((a, b) => a + b, 0);
+                
+                Object.entries(categoryCounts).forEach(([category, count]) => {
+                    const percentage = total > 0 ? ((count / total) * 100).toFixed(1) : 0;
+                    html += `<tr><td>${category}</td><td>${count}</td><td>${percentage}%</td></tr>`;
+                });
+                
+                html += '</table>';
+                questionsDiv.innerHTML = html;
+                
+            } catch (error) {
+                console.error('分类问题失败:', error);
+                questionsDiv.innerHTML = '<div class="status error">分析失败: ' + error.message + '</div>';
+            }
+        }
+        
+        // 导出数据
+        async function exportData(format) {
+            if (!supabase) return;
+            
+            const startDate = document.getElementById('start-date').value;
+            const endDate = document.getElementById('end-date').value;
+            
+            try {
+                let query = supabase
+                    .from('chat_messages')
+                    .select('*, chat_sessions(session_title, user_id)')
+                    .order('timestamp', { ascending: true });
+                
+                if (startDate) {
+                    query = query.gte('timestamp', startDate);
+                }
+                if (endDate) {
+                    query = query.lte('timestamp', endDate + 'T23:59:59');
+                }
+                
+                const { data: messages, error } = await query;
+                
+                if (error) throw error;
+                
+                if (format === 'json') {
+                    downloadJSON(messages, 'chat_export.json');
+                } else if (format === 'csv') {
+                    downloadCSV(messages, 'chat_export.csv');
+                }
+                
+            } catch (error) {
+                alert('导出失败: ' + error.message);
+            }
+        }
+        
+        // 生成 Q&A 数据集
+        async function generateQA() {
+            if (!supabase) return;
+            
+            try {
+                // 获取对话对（用户问题 + AI 回答）
+                const { data: messages } = await supabase
+                    .from('chat_messages')
+                    .select('*')
+                    .order('timestamp', { ascending: true });
+                
+                if (!messages) throw new Error('无法获取消息数据');
+                
+                const qaData = [];
+                
+                for (let i = 0; i < messages.length - 1; i++) {
+                    const userMsg = messages[i];
+                    const aiMsg = messages[i + 1];
+                    
+                    if (userMsg.message_type === 'user' && aiMsg.message_type === 'assistant' &&
+                        userMsg.session_id === aiMsg.session_id) {
+                        qaData.push({
+                            question: userMsg.content,
+                            answer: aiMsg.content,
+                            timestamp: userMsg.timestamp,
+                            session_id: userMsg.session_id
+                        });
+                    }
+                }
+                
+                downloadJSON(qaData, 'qa_dataset.json');
+                alert(`成功生成 ${qaData.length} 条 Q&A 数据！`);
+                
+            } catch (error) {
+                alert('生成 Q&A 失败: ' + error.message);
+            }
+        }
+        
+        // 下载 JSON
+        function downloadJSON(data, filename) {
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+        
+        // 下载 CSV
+        function downloadCSV(data, filename) {
+            if (!data.length) return;
+            
+            const headers = Object.keys(data[0]);
+            const csvContent = [
+                headers.join(','),
+                ...data.map(row => headers.map(header => `"${row[header] || ''}"`).join(','))
+            ].join('\n');
+            
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+        
+        // 设置默认日期
+        document.getElementById('start-date').value = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+        document.getElementById('end-date').value = new Date().toISOString().split('T')[0];
+    </script>
+</body>
+</html> 

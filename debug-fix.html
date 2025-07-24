@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>调试修复工具</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .button {
+            background: #4f46e5;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin: 10px;
+            font-size: 16px;
+        }
+        .button:hover {
+            background: #4338ca;
+        }
+        .success {
+            background: #10b981;
+            color: white;
+            padding: 15px;
+            border-radius: 6px;
+            margin: 10px 0;
+        }
+        .error {
+            background: #ef4444;
+            color: white;
+            padding: 15px;
+            border-radius: 6px;
+            margin: 10px 0;
+        }
+        .info {
+            background: #3b82f6;
+            color: white;
+            padding: 15px;
+            border-radius: 6px;
+            margin: 10px 0;
+        }
+        .code {
+            background: #1f2937;
+            color: #f9fafb;
+            padding: 15px;
+            border-radius: 6px;
+            font-family: 'Courier New', monospace;
+            margin: 10px 0;
+            overflow-x: auto;
+        }
+        #output {
+            min-height: 200px;
+            border: 1px solid #d1d5db;
+            padding: 15px;
+            border-radius: 6px;
+            background: #f9fafb;
+            font-family: monospace;
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔧 AI学习平台调试修复工具</h1>
+        <p>这个工具将帮你检查和修复用户ID问题</p>
+        
+        <button class="button" onclick="checkCurrentState()">1. 检查当前状态</button>
+        <button class="button" onclick="fixUserID()">2. 修复用户ID</button>
+        <button class="button" onclick="clearAllData()">3. 清除所有数据</button>
+        <button class="button" onclick="testSupabase()">4. 测试Supabase连接</button>
+        
+        <div id="output"></div>
+        
+        <div class="info">
+            <strong>使用说明：</strong><br>
+            1. 先点击"检查当前状态"查看问题<br>
+            2. 如果用户ID有问题，点击"修复用户ID"<br>
+            3. 修复后回到主页面测试聊天功能<br>
+            4. 检查Supabase中的数据是否正常
+        </div>
+    </div>
+
+    <script>
+        const output = document.getElementById('output');
+        
+        function log(message, type = 'info') {
+            const timestamp = new Date().toLocaleTimeString();
+            const prefix = type === 'success' ? '✅' : type === 'error' ? '❌' : type === 'warning' ? '⚠️' : 'ℹ️';
+            output.innerHTML += `[${timestamp}] ${prefix} ${message}\n`;
+            output.scrollTop = output.scrollHeight;
+        }
+        
+        function checkCurrentState() {
+            log('=== 开始检查当前状态 ===');
+            
+            // 检查localStorage中的用户相关数据
+            const userId = localStorage.getItem('ai_platform_user_id');
+            const userProfile = localStorage.getItem('userProfile');
+            const completedLessons = localStorage.getItem('completedLessons');
+            const conversationId = localStorage.getItem('difyConversationId');
+            const hasSeenHome = localStorage.getItem('hasSeenHome');
+            
+            log(`用户ID: ${userId || '❌ 未找到'}`, userId ? 'success' : 'error');
+            log(`用户档案: ${userProfile ? '✅ 已设置' : '❌ 未设置'}`, userProfile ? 'success' : 'warning');
+            log(`学习进度: ${completedLessons || '[]'}`, 'info');
+            log(`对话ID: ${conversationId || '❌ 未找到'}`, conversationId ? 'success' : 'warning');
+            log(`首页状态: ${hasSeenHome ? '已访问过' : '首次访问'}`, 'info');
+            
+            // 检查是否有主应用实例
+            if (window.aiPlatform) {
+                log('主应用实例: ✅ 已加载', 'success');
+                log(`应用中的用户ID: ${window.aiPlatform.currentUserId}`, 'info');
+                log(`应用中的对话ID: ${window.aiPlatform.conversationId}`, 'info');
+                
+                if (window.aiPlatform.supabaseService) {
+                    log('Supabase服务: ✅ 已初始化', 'success');
+                    log(`Supabase会话ID: ${window.aiPlatform.supabaseService.currentSessionId}`, 'info');
+                } else {
+                    log('Supabase服务: ❌ 未初始化', 'error');
+                }
+            } else {
+                log('主应用实例: ❌ 未找到（请确保在主页面运行）', 'error');
+            }
+            
+            log('=== 检查完成 ===\n');
+        }
+        
+        function fixUserID() {
+            log('=== 开始修复用户ID ===');
+            
+            let userId = localStorage.getItem('ai_platform_user_id');
+            
+            if (!userId) {
+                // 生成新的用户ID
+                userId = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+                    const r = Math.random() * 16 | 0;
+                    const v = c == 'x' ? r : (r & 0x3 | 0x8);
+                    return v.toString(16);
+                });
+                
+                localStorage.setItem('ai_platform_user_id', userId);
+                log(`生成新用户ID: ${userId}`, 'success');
+            } else {
+                log(`用户ID已存在: ${userId}`, 'success');
+            }
+            
+            // 如果主应用已加载，更新应用中的用户ID
+            if (window.aiPlatform) {
+                window.aiPlatform.currentUserId = userId;
+                if (window.aiPlatform.supabaseService) {
+                    // 重新初始化Supabase服务中的用户ID
+                    const oldGetUserId = window.aiPlatform.supabaseService.getUserId;
+                    window.aiPlatform.supabaseService.getUserId = function() {
+                        return userId;
+                    };
+                }
+                log('已更新应用中的用户ID', 'success');
+            }
+            
+            log('=== 修复完成 ===\n');
+            log('请回到主页面测试聊天功能', 'info');
+        }
+        
+        function clearAllData() {
+            if (confirm('⚠️ 确定要清除所有本地数据吗？这将重置所有学习进度！')) {
+                log('=== 清除所有数据 ===');
+                
+                const keys = Object.keys(localStorage);
+                keys.forEach(key => {
+                    log(`清除: ${key}`, 'warning');
+                });
+                
+                localStorage.clear();
+                log('✅ 所有本地数据已清除', 'success');
+                log('=== 清除完成 ===\n');
+                log('请刷新主页面重新开始', 'info');
+            }
+        }
+        
+        async function testSupabase() {
+            log('=== 测试Supabase连接 ===');
+            
+            if (!window.aiPlatform || !window.aiPlatform.supabaseService) {
+                log('❌ 请在主页面运行此测试', 'error');
+                return;
+            }
+            
+            const supabaseService = window.aiPlatform.supabaseService;
+            
+            try {
+                // 测试用户ID生成
+                const userId = supabaseService.getUserId();
+                log(`用户ID: ${userId}`, 'success');
+                
+                // 测试数据库连接（通过尝试获取聊天历史）
+                const history = await supabaseService.getUserChatHistory(1);
+                log(`聊天历史查询: ✅ 成功 (${history.length} 条记录)`, 'success');
+                
+                // 测试会话创建
+                const session = await supabaseService.getOrCreateSession('test-session-' + Date.now());
+                if (session) {
+                    log(`会话创建: ✅ 成功 (ID: ${session.id})`, 'success');
+                } else {
+                    log(`会话创建: ⚠️ 可能失败，但不影响基本功能`, 'warning');
+                }
+                
+            } catch (error) {
+                log(`Supabase连接错误: ${error.message}`, 'error');
+                log('请检查Supabase配置是否正确', 'warning');
+            }
+            
+            log('=== 测试完成 ===\n');
+        }
+        
+        // 页面加载时自动检查状态
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                log('🔧 调试工具已就绪');
+                log('建议先点击"检查当前状态"了解问题\n');
+            }, 500);
+        });
+    </script>
+</body>
+</html> 

@@ -1,0 +1,52 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# 项目结构与开发指南
+
+本项目旨在创建一个名为"AI创富营探索地图"的响应式独立网页应用。核心是利用游戏化地图引导学习，并集成Dify AI助教。
+
+## 技术栈
+
+*   **前端:** HTML, CSS, JavaScript (原生，无框架)
+*   **AI 助教:** [Dify](mdc:https:/dify.ai) (通过 iframe 或 API 嵌入)
+*   **开发工具:** Cursor
+
+## 建议文件结构
+
+```
+.
+├── index.html          # 主页面，包含地图和所有UI元素
+├── css/
+│   └── style.css       # 主要样式，包括地图和响应式设计
+├── js/
+│   ├── main.js         # 核心应用逻辑 (节点解锁、内容更新、进度保存)
+│   └── dify.js         # 与Dify机器人交互的专属代码
+└── assets/
+    ├── map-background.png # 地图背景图片
+    └── icons/           # 各种状态的节点图标
+```
+
+## 核心功能实现指南
+
+1.  **学习地图 ([index.html](mdc:index.html), [css/style.css](mdc:css/style.css)):**
+    *   地图主体将是 `index.html` 中的一个 `div` 容器，使用 `assets/map-background.png` 作为背景。
+    *   地图上的"小岛"和"关卡节点"将是绝对定位的 `div` 或 `button` 元素。
+    *   节点的不同状态 (锁定, 当前, 已完成) 将通过 CSS class (例如 `.locked`, `.current`, `.completed`) 进行控制。这些样式定义在 `style.css` 中。
+
+2.  **交互与逻辑 ([js/main.js](mdc:js/main.js)):**
+    *   **数据结构:** 在 `main.js` 中，用一个JavaScript对象或数组来定义所有节点的数据，包括其ID、位置、学习资料、依赖关系（解锁哪个节点后解锁此节点）等。
+    *   **初始化:** 页面加载时，`main.js` 会根据 `localStorage` 中保存的进度来渲染地图上各个节点的初始状态。
+    *   **事件处理:** `main.js` 将为每个节点添加点击事件监听器。
+        *   点击已解锁节点：动态显示该节点的学习内容。
+        *   点击"完成"按钮：更新节点状态，将进度存入 `localStorage`，并解锁下一个节点。
+    *   **单页应用 (SPA) 体验:** 所有内容的更新都在 `index.html` 中动态完成，不刷新页面。
+
+3.  **AI助教集成 ([js/dify.js](mdc:js/dify.js)):**
+    *   **嵌入:** Dify 聊天机器人将通过 `iframe` 嵌入到 `index.html` 的固定位置。
+    *   **互动:** 当用户点击"完成"按钮时，`main.js` 可以调用 `dify.js` 中的函数。
+    *   `dify.js` 将负责处理与 Dify API 的通信，例如发送一个预设的指令来触发鼓励性消息。
+
+这个指南为项目的基本框架提供了方向。我们将根据这个结构来逐步构建应用。
+

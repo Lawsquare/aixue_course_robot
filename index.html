@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>爱学AI课程助手 - 探索地图</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- 左侧学习地图面板 -->
+        <div class="left-panel">
+            <!-- 顶部标题栏 -->
+            <div class="header">
+                <div class="logo-title">
+                    <img src="logo.png" alt="爱学AI课程助手" class="logo-img">
+                    <h1>爱学AI课程助手</h1>
+                </div>
+                <div class="header-right">
+                    <div class="progress-info">
+                        <span id="progress-text">进度: 0/16</span>
+                    </div>
+                    <button id="debug-reset" class="debug-btn" title="清除所有本地数据和对话记忆">
+                        🔄 重置
+                    </button>
+                </div>
+            </div>
+
+            <!-- 当前关卡信息区域 -->
+            <div class="lesson-info-panel">
+                <div class="lesson-info-left">
+                    <h3>📚 当前关卡</h3>
+                    <h4 id="lesson-title">选择一个关卡开始学习</h4>
+                    <div id="lesson-description">点击地图上的关卡查看详细信息</div>
+                </div>
+                <div class="lesson-info-center">
+                    <h3>📚 学习资料：</h3>
+                    <div id="lesson-materials" class="materials-list">
+                        <div class="materials-items"></div>
+                    </div>
+                </div>
+                <div class="lesson-info-right">
+                    <h3>📝 课后作业</h3>
+                    <div id="lesson-homework" class="homework-content">
+                        点击关卡查看课后作业要求
+                    </div>
+                    <div class="homework-submit-area">
+                        <a href="https://ycn1n76t2yyb.feishu.cn/wiki/ZDCWwhFKRisHbik3674cORa1nef" target="_blank" class="submit-homework-btn">
+                            📤 提交作业
+                        </a>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- 学习地图容器 -->
+            <div class="map-container">
+                <div class="learning-map">
+                    <!-- 第一行关卡 -->
+                    <div class="lesson-row row-1">
+                        <div class="lesson-item">
+                            <div class="lesson-node active" data-lesson="1.1">
+                                <div class="node-icon">💬</div>
+                                <div class="node-number">1</div>
+                            </div>
+                            <button class="lesson-complete-btn" data-lesson="1.1" style="display: none;">
+                                ✅ 标记为已完成
+                            </button>
+                        </div>
+                        <div class="lesson-connector"></div>
+                        <div class="lesson-item">
+                            <div class="lesson-node locked" data-lesson="1.2">
+                                <div class="node-icon">💡</div>
+                                <div class="node-number">2</div>
+                            </div>
+                            <button class="lesson-complete-btn" data-lesson="1.2" style="display: none;">
+                                ✅ 标记为已完成
+                            </button>
+                        </div>
+                        <div class="lesson-connector"></div>
+                        <div class="lesson-item">
+                            <div class="lesson-node locked" data-lesson="1.3">
+                                <div class="node-icon">🤖</div>
+                                <div class="node-number">3</div>
+                            </div>
+                            <button class="lesson-complete-btn" data-lesson="1.3" style="display: none;">
+                                ✅ 标记为已完成
+                            </button>
+                        </div>
+                        <div class="lesson-connector"></div>
+                        <div class="lesson-item">
+                            <div class="lesson-node locked" data-lesson="1.4">
+                                <div class="node-icon">💰</div>
+                                <div class="node-number">4</div>
+                            </div>
+                            <button class="lesson-complete-btn" data-lesson="1.4" style="display: none;">
+                                ✅ 标记为已完成
+                            </button>
+                        </div>
+                        <div class="lesson-connector"></div>
+                        <div class="lesson-item">
+                            <div class="lesson-node locked" data-lesson="1.5">
+                                <div class="node-icon">📊</div>
+                                <div class="node-number">5</div>
+                            </div>
+                            <button class="lesson-complete-btn" data-lesson="1.5" style="display: none;">
+                                ✅ 标记为已完成
+                            </button>
+                        </div>
+                        <div class="lesson-connector"></div>
+                        <div class="lesson-item">
+                            <div class="lesson-node locked" data-lesson="1.6">
+                                <div class="node-icon">🛍️</div>
+                                <div class="node-number">6</div>
+                            </div>
+                            <button class="lesson-complete-btn" data-lesson="1.6" style="display: none;">
+                                ✅ 标记为已完成
+                            </button>
+                        </div>
+                        <div class="lesson-connector"></div>
+                        <div class="lesson-item">
+                            <div class="lesson-node locked" data-lesson="1.7">
+                                <div class="node-icon">🚀</div>
+                                <div class="node-number">7</div>
+                            </div>
+                            <button class="lesson-complete-btn" data-lesson="1.7" style="display: none;">
+                                ✅ 标记为已完成
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- 转折连接线 -->
+                    <div class="row-connector"></div>
+                    
+                    <!-- 第二行关卡 -->
+                    <div class="lesson-row row-2">
+                        <div class="lesson-item">
+                            <div class="lesson-node locked" data-lesson="2.1">
+                                <div class="node-icon">🎯</div>
+                                <div class="node-number">8</div>
+                            </div>
+                            <button class="lesson-complete-btn" data-lesson="2.1" style="display: none;">
+                                ✅ 标记为已完成
+                            </button>
+                        </div>
+                        <div class="lesson-connector"></div>
+                        <div class="lesson-item">
+                            <div class="lesson-node locked" data-lesson="2.2">
+                                <div class="node-icon">🎬</div>
+                                <div class="node-number">9</div>
+                            </div>
+                            <button class="lesson-complete-btn" data-lesson="2.2" style="display: none;">
+                                ✅ 标记为已完成
+                            </button>
+                        </div>
+                        <div class="lesson-connector"></div>
+                        <div class="lesson-item">
+                            <div class="lesson-node locked" data-lesson="2.3">
+                                <div class="node-icon">📱</div>
+                                <div class="node-number">10</div>
+                            </div>
+                            <button class="lesson-complete-btn" data-lesson="2.3" style="display: none;">
+                                ✅ 标记为已完成
+                            </button>
+                        </div>
+                        <div class="lesson-connector"></div>
+                        <div class="lesson-item">
+                            <div class="lesson-node locked" data-lesson="2.4">
+                                <div class="node-icon">👥</div>
+                                <div class="node-number">11</div>
+                            </div>
+                            <button class="lesson-complete-btn" data-lesson="2.4" style="display: none;">
+                                ✅ 标记为已完成
+                            </button>
+                        </div>
+                        <div class="lesson-connector"></div>
+                        <div class="lesson-item">
+                            <div class="lesson-node locked" data-lesson="2.5">
+                                <div class="node-icon">📄</div>
+                                <div class="node-number">12</div>
+                            </div>
+                            <button class="lesson-complete-btn" data-lesson="2.5" style="display: none;">
+                                ✅ 标记为已完成
+                            </button>
+                        </div>
+                        <div class="lesson-connector"></div>
+                        <div class="lesson-item">
+                            <div class="lesson-node locked" data-lesson="2.6">
+                                <div class="node-icon">🔮</div>
+                                <div class="node-number">13</div>
+                            </div>
+                            <button class="lesson-complete-btn" data-lesson="2.6" style="display: none;">
+                                ✅ 标记为已完成
+                            </button>
+                        </div>
+                        <div class="lesson-connector"></div>
+                        <div class="lesson-item">
+                            <div class="lesson-node locked" data-lesson="2.7">
+                                <div class="node-icon">🏆</div>
+                                <div class="node-number">14</div>
+                            </div>
+                            <button class="lesson-complete-btn" data-lesson="2.7" style="display: none;">
+                                ✅ 标记为已完成
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 右侧AI聊天面板 -->
+        <div class="right-panel">
+            <div class="chat-header">
+                <h3>🤖 AI学习助教</h3>
+                <div class="ai-status">
+                    <span class="status-dot online"></span>
+                    <span>在线</span>
+                </div>
+            </div>
+
+            <div class="chat-container">
+                <div class="chat-messages" id="chat-messages">
+                    <div class="message ai-message">
+                        <div class="avatar">🤖</div>
+                        <div class="content">
+                            <p>你好！欢迎来到AI创富营！我是你的学习助教小艾。</p>
+                            <p>我可以帮你：</p>
+                            <ul>
+                                <li>🎯 解答学习过程中的疑问</li>
+                                <li>💡 提供AI工具使用建议</li>
+                                <li>🚀 分享创富实战经验</li>
+                                <li>📈 制定个人学习计划</li>
+                            </ul>
+                            <p>开始你的AI创富之旅吧！有什么问题随时问我～</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="chat-input-container">
+                    <div class="uploaded-files" id="uploaded-files"></div>
+                    <div class="input-wrapper">
+                        <button id="upload-button" class="upload-btn" title="上传文件">
+                            <span>➕</span>
+                        </button>
+                        <textarea id="chat-input" placeholder="输入你的问题，或按 Ctrl+V 粘贴图片..." rows="2"></textarea>
+                        <button id="send-button">
+                            <span>发送</span>
+                            <span class="send-icon">📤</span>
+                        </button>
+                    </div>
+                    <input type="file" id="file-input" multiple accept="image/*" style="display: none;">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    <!-- 首页 -->
+    <div id="home-page" class="page-overlay">
+        <div class="home-content">
+            <div class="home-header">
+                <h1>🎯 AI创富营</h1>
+                <p class="home-subtitle">开启你的AI创富之旅，掌握未来财富密码</p>
+            </div>
+            <div class="home-features">
+                <div class="feature-item">
+                    <div class="feature-icon">🚀</div>
+                    <h3>AI工具掌握</h3>
+                    <p>学会使用最前沿的AI工具</p>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">💰</div>
+                    <h3>实战创富</h3>
+                    <p>真实案例教你如何用AI赚钱</p>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">🎓</div>
+                    <h3>系统学习</h3>
+                    <p>从零基础到AI创富高手</p>
+                </div>
+            </div>
+            <button id="start-learning-btn" class="home-start-btn">🎉 开始学习</button>
+        </div>
+    </div>
+
+    <!-- 新学员问卷 -->
+    <div id="questionnaire" class="page-overlay" style="display: none;">
+        <div class="questionnaire-content">
+            <div class="questionnaire-header">
+                <h2>📋 让我们了解一下你</h2>
+                <div class="progress-dots">
+                    <span class="dot active" data-step="1"></span>
+                    <span class="dot" data-step="2"></span>
+                    <span class="dot" data-step="3"></span>
+                </div>
+            </div>
+            
+            <div class="question-form">
+                <!-- 问题1：学习目标 -->
+                <div class="question-step active" data-step="1">
+                    <div class="question-group">
+                        <label class="question-label">🎯 你的学习目标是什么？</label>
+                        <div class="radio-group">
+                            <label class="radio-option">
+                                <input type="radio" name="goal" value="side-business">
+                                <span class="radio-text">💼 想要副业赚钱</span>
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" name="goal" value="work-efficiency">
+                                <span class="radio-text">⚡ 提升工作效率</span>
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" name="goal" value="startup">
+                                <span class="radio-text">🚀 创业做生意</span>
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" name="goal" value="learning">
+                                <span class="radio-text">📚 纯粹学习了解</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 问题2：AI经验 -->
+                <div class="question-step" data-step="2">
+                    <div class="question-group">
+                        <label class="question-label">🤖 你的AI经验水平？</label>
+                        <div class="radio-group">
+                            <label class="radio-option">
+                                <input type="radio" name="experience" value="beginner">
+                                <span class="radio-text">🔰 完全新手，从未使用过</span>
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" name="experience" value="basic">
+                                <span class="radio-text">🌟 有基础了解，偶尔使用</span>
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" name="experience" value="intermediate">
+                                <span class="radio-text">⭐ 已经在使用，想深入学习</span>
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" name="experience" value="advanced">
+                                <span class="radio-text">🏆 比较熟练，想学习变现</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 问题3：学习时间 -->
+                <div class="question-step" data-step="3">
+                    <div class="question-group">
+                        <label class="question-label">⏰ 你每天可以投入多少时间学习？</label>
+                        <div class="radio-group">
+                            <label class="radio-option">
+                                <input type="radio" name="time" value="30min">
+                                <span class="radio-text">⏰ 每天30分钟</span>
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" name="time" value="1hour">
+                                <span class="radio-text">🕐 每天1小时</span>
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" name="time" value="2hours">
+                                <span class="radio-text">🕑 每天2小时以上</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 导航按钮 -->
+                <div class="questionnaire-navigation">
+                    <button id="prev-question" class="nav-btn prev-btn" style="display: none;">
+                        ← 上一步
+                    </button>
+                    <button id="next-question" class="nav-btn next-btn" disabled>
+                        下一步 →
+                    </button>
+                    <button id="submit-questionnaire" class="questionnaire-submit-btn" style="display: none;">
+                        开始学习 🚀
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 欢迎弹窗 (老用户) -->
+    <div id="welcome-modal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <h2>🎉 欢迎回来！</h2>
+            <p>为了提供更好的学习体验，请告诉我你的基础情况：</p>
+            <div class="question-group">
+                <h3>你的AI工具使用经验如何？</h3>
+                <div class="options">
+                    <label><input type="radio" name="experience" value="beginner"> 🌱 完全新手</label>
+                    <label><input type="radio" name="experience" value="basic"> 📚 有基础了解</label>
+                    <label><input type="radio" name="experience" value="intermediate"> 💪 已有实践经验</label>
+                </div>
+            </div>
+            <div class="question-group">
+                <h3>你最感兴趣的创富方向是？</h3>
+                <div class="options">
+                    <label><input type="radio" name="interest" value="content"> ✍️ 内容创作</label>
+                    <label><input type="radio" name="interest" value="ecommerce"> 🛍️ 电商服务</label>
+                    <label><input type="radio" name="interest" value="data"> 📊 数据分析</label>
+                    <label><input type="radio" name="interest" value="all"> 🎯 全方位学习</label>
+                </div>
+            </div>
+            <button id="start-learning" class="start-btn">继续学习之旅 🚀</button>
+        </div>
+    </div>
+
+    <script src="js/supabase.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html> 
