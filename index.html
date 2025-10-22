@@ -45,9 +45,13 @@
                         点击关卡查看课后作业要求
                     </div>
                     <div class="homework-submit-area">
-                        <a href="https://ycn1n76t2yyb.feishu.cn/wiki/ZDCWwhFKRisHbik3674cORa1nef" target="_blank" class="submit-homework-btn">
+                        <a href="https://pcnxm41ut6t0.feishu.cn/docx/K0TjdhsuGoub6ExK8Lsclm2On3f" target="_blank" class="submit-homework-btn">
                             📤 提交作业
                         </a>
+                        <button class="homework-complete-btn" id="homework-complete-btn" style="display: none;">
+                            <span class="checkbox" id="homework-checkbox"></span>
+                            <span class="checkbox-text">已完成</span>
+                        </button>
                     </div>
 
                 </div>
@@ -278,7 +282,7 @@
                     <p>从零基础到AI创富高手</p>
                 </div>
             </div>
-            <button id="start-learning-btn" class="home-start-btn">🎉 开始学习</button>
+            <button id="start-learning-btn" class="home-start-btn" onclick="window.aiPlatform && window.aiPlatform.handleStartLearning()">🎉 开始学习</button>
         </div>
     </div>
 
@@ -408,7 +412,16 @@
         </div>
     </div>
 
-    <script src="js/supabase.js"></script>
-    <script src="js/app.js"></script>
+    <!-- 引入 Supabase 客户端 -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        // 确保 supabase 对象在全局可用
+        window.supabase = supabase;
+    </script>
+    
+    <!-- 应用脚本 -->
+    <script src="js/config.js" type="module"></script>
+    <script src="js/supabase.js" type="module"></script>
+    <script src="js/app.js" type="module"></script>
 </body>
 </html> 

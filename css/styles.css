@@ -27,6 +27,8 @@ body {
     flex-direction: column;
     border-radius: 0 15px 15px 0;
     box-shadow: 2px 0 20px rgba(0, 0, 0, 0.1);
+    min-width: 0; /* 确保可以压缩 */
+    overflow: hidden; /* 防止内容溢出 */
 }
 
 /* 顶部标题栏 */
@@ -446,6 +448,7 @@ body {
     flex: 1;
     padding: 20px;
     overflow: hidden;
+    min-width: 0; /* 确保可以压缩 */
 }
 
 .learning-map {
@@ -693,7 +696,8 @@ body {
     border-radius: 15px 0 0 15px;
     box-shadow: -2px 0 20px rgba(0, 0, 0, 0.1);
     overflow: hidden;
-    min-width: 0;
+    min-width: 300px; /* 设置最小宽度避免过度压缩 */
+    max-width: 400px; /* 设置最大宽度 */
 }
 
 .chat-header {
@@ -1435,6 +1439,194 @@ body {
 }
 
 /* 响应式设计 */
+/* 超小屏幕笔记本适配 (1200px - 1366px) */
+@media (max-width: 1200px) and (min-width: 1025px) {
+    .right-panel {
+        width: 300px; /* 显著减少右侧面板宽度 */
+        min-width: 280px;
+    }
+    
+    .lesson-info-panel {
+        padding: 12px;
+        gap: 10px;
+        min-height: 90px;
+    }
+    
+    .lesson-info-left,
+    .lesson-info-center,
+    .lesson-info-right {
+        padding: 10px;
+    }
+    
+    .materials-list {
+        max-height: 75px;
+        min-height: 120px;
+    }
+    
+    .homework-content {
+        max-height: 75px;
+    }
+    
+    .learning-map {
+        height: calc(100vh - 260px);
+        padding: 40px;
+        gap: 12px;
+    }
+    
+    .lesson-row {
+        gap: 25px;
+    }
+    
+    .lesson-node {
+        width: 65px;
+        height: 65px;
+    }
+    
+    .node-icon {
+        font-size: 22px;
+    }
+    
+    .node-number {
+        width: 18px;
+        height: 18px;
+        font-size: 10px;
+    }
+    
+    /* 优化聊天区域 */
+    .chat-messages {
+        padding: 15px;
+        gap: 12px;
+    }
+    
+    .message .content {
+        padding: 10px 12px;
+        font-size: 13px;
+        line-height: 1.4; /* 减少行高节省空间 */
+    }
+    
+    .chat-input-container {
+        padding: 12px;
+    }
+    
+    /* 优化头部区域 */
+    .header {
+        padding: 15px; /* 减少头部内边距 */
+    }
+    
+    .header h1 {
+        font-size: 18px; /* 减少标题字体大小 */
+    }
+    
+    .progress-info {
+        padding: 6px 12px; /* 减少进度信息内边距 */
+        font-size: 13px;
+    }
+}
+
+/* 小屏幕笔记本电脑适配 (1024px - 1366px) */
+@media (max-width: 1366px) and (min-width: 1201px) {
+    .right-panel {
+        width: 350px; /* 减少右侧面板宽度 */
+    }
+    
+    .lesson-info-panel {
+        padding: 15px; /* 减少内边距 */
+        gap: 12px;
+        min-height: 100px;
+    }
+    
+    .lesson-info-left,
+    .lesson-info-center,
+    .lesson-info-right {
+        padding: 12px; /* 减少内边距 */
+    }
+    
+    .materials-list {
+        max-height: 90px; /* 减少材料列表高度 */
+        min-height: 140px;
+    }
+    
+    .homework-content {
+        max-height: 90px; /* 减少作业区域高度 */
+    }
+    
+    .learning-map {
+        height: calc(100vh - 280px); /* 调整地图高度 */
+        padding: 50px; /* 减少内边距 */
+        gap: 15px;
+    }
+    
+    .lesson-row {
+        gap: 30px; /* 减少节点间距 */
+    }
+    
+    .lesson-node {
+        width: 70px; /* 稍微缩小节点 */
+        height: 70px;
+    }
+    
+    .node-icon {
+        font-size: 24px;
+    }
+    
+    .node-number {
+        width: 20px;
+        height: 20px;
+        font-size: 11px;
+    }
+}
+
+/* 中小屏幕适配 (769px - 1024px) */
+@media (max-width: 1024px) and (min-width: 769px) {
+    .right-panel {
+        width: 280px; /* 进一步减少宽度 */
+        min-width: 250px;
+    }
+    
+    .lesson-info-panel {
+        flex-direction: column;
+        gap: 10px;
+        min-height: auto;
+        padding: 12px;
+    }
+    
+    .lesson-info-left,
+    .lesson-info-center,
+    .lesson-info-right {
+        flex: none;
+        padding: 10px;
+    }
+    
+    .learning-map {
+        height: calc(100vh - 300px);
+        padding: 30px;
+        gap: 12px;
+    }
+    
+    .lesson-row {
+        gap: 25px;
+    }
+    
+    .lesson-node {
+        width: 65px;
+        height: 65px;
+    }
+    
+    .node-icon {
+        font-size: 22px;
+    }
+    
+    .materials-list {
+        max-height: 80px;
+        min-height: 120px;
+    }
+    
+    .homework-content {
+        max-height: 80px;
+    }
+}
+
+/* 手机和平板适配 */
 @media (max-width: 768px) {
     .app-container {
         flex-direction: column;
@@ -1602,24 +1794,27 @@ body {
 .lesson-complete-btn {
     position: absolute;
     top: 90px; /* 固定位置，在节点下方 */
-    background: linear-gradient(135deg, #10b981, #059669);
-    color: white;
-    border: none;
+    background: white;
+    color: #333;
+    border: 1px solid #e2e8f0;
     padding: 6px 12px;
     border-radius: 15px;
     font-size: 11px;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.3s ease;
-    box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     white-space: nowrap;
     opacity: 0;
     transform: translateY(-10px);
+    display: flex;
+    align-items: center;
+    gap: 6px;
 }
 
 .lesson-complete-btn:hover {
-    background: linear-gradient(135deg, #059669, #047857);
-    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+    background: #f8fafc;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 .lesson-complete-btn:active {
@@ -1632,31 +1827,128 @@ body {
     transform: translateY(0);
 }
 
-/* 已完成课程的撤回按钮样式 */
+/* 复选框样式 */
+.checkbox {
+    width: 16px;
+    height: 16px;
+    border: 2px solid #cbd5e1;
+    border-radius: 4px;
+    display: inline-block;
+    position: relative;
+    transition: all 0.2s ease;
+    background: white;
+}
+
+/* 已完成课程的按钮样式 */
 .lesson-complete-btn.completed {
-    background: linear-gradient(135deg, #f59e0b, #d97706);
-    box-shadow: 0 2px 8px rgba(245, 158, 11, 0.3);
+    background: #ecfdf5;
+    border-color: #10b981;
 }
 
-.lesson-complete-btn.completed:hover {
-    background: linear-gradient(135deg, #d97706, #b45309);
-    box-shadow: 0 4px 12px rgba(245, 158, 11, 0.4);
+.lesson-complete-btn.completed .checkbox {
+    background: #10b981;
+    border-color: #10b981;
 }
 
-.lesson-complete-btn.completed .btn-text-default {
-    display: inline;
-}
-
-.lesson-complete-btn.completed .btn-text-hover {
+/* 复选框中的勾 */
+.checkbox::after {
+    content: '';
+    position: absolute;
     display: none;
+    left: 5px;
+    top: 1px;
+    width: 4px;
+    height: 8px;
+    border: solid white;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
 }
 
-.lesson-complete-btn.completed:hover .btn-text-default {
-    display: none;
+.lesson-complete-btn.completed .checkbox::after {
+    display: block;
 }
 
-.lesson-complete-btn.completed:hover .btn-text-hover {
-    display: inline;
+/* 悬停效果 */
+.lesson-complete-btn:hover .checkbox {
+    border-color: #10b981;
 }
 
 /* 课程节点样式调整 */
+
+/* 作业完成按钮样式 */
+.homework-complete-btn {
+    background: white;
+    color: #333;
+    border: 1px solid #e2e8f0;
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-left: 10px;
+}
+
+.homework-complete-btn:hover {
+    background: #f8fafc;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* 作业完成按钮的复选框样式 */
+.homework-complete-btn .checkbox {
+    width: 16px;
+    height: 16px;
+    border: 2px solid #cbd5e1;
+    border-radius: 4px;
+    display: inline-block;
+    position: relative;
+    transition: all 0.2s ease;
+    background: white;
+}
+
+/* 已完成状态的作业按钮样式 */
+.homework-complete-btn.completed {
+    background: #ecfdf5;
+    border-color: #10b981;
+}
+
+.homework-complete-btn.completed .checkbox {
+    background: #10b981;
+    border-color: #10b981;
+}
+
+/* 作业复选框中的勾 */
+.homework-complete-btn .checkbox::after {
+    content: '';
+    position: absolute;
+    display: none;
+    left: 5px;
+    top: 1px;
+    width: 4px;
+    height: 8px;
+    border: solid white;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+}
+
+.homework-complete-btn.completed .checkbox::after {
+    display: block;
+}
+
+/* 作业按钮悬停效果 */
+.homework-complete-btn:hover .checkbox {
+    border-color: #10b981;
+}
+
+/* 作业提交区域布局 */
+.homework-submit-area {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 15px;
+    margin-bottom: 15px;
+}

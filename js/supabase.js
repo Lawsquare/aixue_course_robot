@@ -1,9 +1,12 @@
+// 导入配置
+import config from './config.js';
+
 // Supabase 配置和数据库交互
-class SupabaseService {
+export class SupabaseService {
     constructor() {
-        // Supabase 配置 - 需要替换为你的实际配置
-        this.supabaseUrl = 'https://ntxkmsuheurrczdfxoax.supabase.co';
-        this.supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im50eGttc3VoZXVycmN6ZGZ4b2F4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTMwOTk1NDcsImV4cCI6MjA2ODY3NTU0N30.Fyl39b_O0tkLfnJTowOHfOLUw9tXd9O3Sf-f4rRYagw';
+        // 从配置中获取 Supabase 配置
+        this.supabaseUrl = '';
+        this.supabaseKey = '';
         this.supabase = null;
         this.currentSessionId = null;
         
@@ -12,9 +15,29 @@ class SupabaseService {
 
     async initSupabase() {
         try {
-            // 动态导入 Supabase 客户端
-            const { createClient } = await import('https://cdn.skypack.dev/@supabase/supabase-js@2');
-            this.supabase = createClient(this.supabaseUrl, this.supabaseKey);
+            // 等待配置加载完成
+            await new Promise(resolve => {
+                const checkConfig = () => {
+                    if (config.getSupabaseUrl() && config.getSupabaseKey()) {
+                        this.supabaseUrl = config.getSupabaseUrl();
+                        this.supabaseKey = config.getSupabaseKey();
+                        resolve();
+                    } else {
+                        setTimeout(checkConfig, 100);
+                    }
+                };
+                checkConfig();
+            });
+            
+            // 使用全局的 Supabase 客户端
+            if (window.supabase) {
+                this.supabase = window.supabase.createClient(this.supabaseUrl, this.supabaseKey);
+            } else {
+                console.error('❌ Supabase 客户端未找到，请确保已加载 Supabase JS SDK');
+                // 尝试使用备用方法
+                const { createClient } = await import('https://cdn.skypack.dev/@supabase/supabase-js@2');
+                this.supabase = createClient(this.supabaseUrl, this.supabaseKey);
+            }
             console.log('✅ Supabase 客户端初始化成功');
         } catch (error) {
             console.error('❌ Supabase 客户端初始化失败:', error);

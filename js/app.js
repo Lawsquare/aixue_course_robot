@@ -1,3 +1,6 @@
+// 导入 SupabaseService 类
+import { SupabaseService } from './supabase.js';
+
 // AI创富营学习平台 - 主应用逻辑
 class AILearningPlatform {
     constructor() {
@@ -74,8 +77,7 @@ class AILearningPlatform {
                 title: 'Day4 打造你的AI智能体助手',
                 description: '制作并发布自己的AI金牌客服，完成智能体上线全流程',
                 materials: [
-                    { title: '《小微智能体效果展示》', url: 'https://ui6t5revpkk.feishu.cn/docx/XeMqdmJYnokfjAxnmwKcIgG7nje' },
-                    { title: '《小微智能体上线全流程》', url: 'https://htjxcky601.feishu.cn/docx/XeMqdmJYnokfjAxnmwKcIgG7nje' }
+                    { title: '《打造你的AI智能体助手》', url: 'https://htjxcky601.feishu.cn/docx/BNHXde5cJo2SQ9xOdP0ciEupn8c' }
                 ],
                 homework: [
                     '【必做】学员根据上课内容完成任意一个小微智能体的上线。',
@@ -305,6 +307,20 @@ class AILearningPlatform {
             });
         }
 
+        // 作业完成按钮
+        document.addEventListener('click', (e) => {
+            if (e.target.closest('#homework-complete-btn')) {
+                const btn = e.target.closest('#homework-complete-btn');
+                if (this.currentLesson) {
+                    // 触发当前课程的完成/取消完成操作
+                    const lessonBtn = document.querySelector(`.lesson-complete-btn[data-lesson="${this.currentLesson}"]`);
+                    if (lessonBtn) {
+                        lessonBtn.click(); // 模拟点击学习地图中的按钮
+                    }
+                }
+            }
+        });
+
 
 
         // 聊天相关事件
@@ -423,12 +439,15 @@ class AILearningPlatform {
                 if (isCompleted) {
                     btn.classList.add('completed');
                     btn.innerHTML = `
-                        <span class="btn-text-default">✅ 已完成</span>
-                        <span class="btn-text-hover">❌ 撤回</span>
+                        <span class="checkbox"></span>
+                        <span>已完成</span>
                     `;
                 } else {
                     btn.classList.remove('completed');
-                    btn.innerHTML = '✅ 标记为已完成';
+                    btn.innerHTML = `
+                        <span class="checkbox"></span>
+                        <span>已完成</span>
+                    `;
                 }
             }
         });
@@ -632,6 +651,9 @@ class AILearningPlatform {
 
         // 显示操作按钮（现在移到地图中）
         this.updateLessonButtons(lessonId);
+        
+        // 更新作业完成按钮状态
+        this.updateHomeworkCompleteButton(lessonId);
     }
 
     updateLessonButtons(lessonId) {
@@ -658,21 +680,57 @@ class AILearningPlatform {
                 if (canUncomplete) {
                     currentBtn.classList.add('completed');
                     currentBtn.innerHTML = `
-                        <span class="btn-text-default">✅ 已完成</span>
-                        <span class="btn-text-hover">❌ 撤回</span>
+                        <span class="checkbox"></span>
+                        <span>已完成</span>
                     `;
                 } else {
                     currentBtn.classList.add('completed');
-                    currentBtn.innerHTML = '✅ 已完成';
+                    currentBtn.innerHTML = `
+                        <span class="checkbox"></span>
+                        <span>已完成</span>
+                    `;
                     currentBtn.style.opacity = '0.6';
                     currentBtn.style.cursor = 'not-allowed';
                 }
             } else {
                 currentBtn.classList.remove('completed');
-                currentBtn.innerHTML = '✅ 标记为已完成';
+                currentBtn.innerHTML = `
+                    <span class="checkbox"></span>
+                    <span>已完成</span>
+                `;
                 currentBtn.style.opacity = '1';
                 currentBtn.style.cursor = 'pointer';
             }
+        }
+    }
+
+    // 更新作业完成按钮状态
+    updateHomeworkCompleteButton(lessonId) {
+        const homeworkBtn = document.getElementById('homework-complete-btn');
+        if (!homeworkBtn) return;
+
+        const currentNode = document.querySelector(`.lesson-node[data-lesson="${lessonId}"]`);
+        const isLessonUnlocked = currentNode && (currentNode.classList.contains('active') || currentNode.classList.contains('completed'));
+        
+        if (isLessonUnlocked) {
+            // 课程已解锁，显示按钮
+            homeworkBtn.style.display = 'flex';
+            
+            const isCompleted = this.completedLessons.includes(lessonId);
+            const checkbox = homeworkBtn.querySelector('.checkbox');
+            
+            if (isCompleted) {
+                homeworkBtn.classList.add('completed');
+                checkbox.style.background = '#10b981';
+                checkbox.style.borderColor = '#10b981';
+            } else {
+                homeworkBtn.classList.remove('completed');
+                checkbox.style.background = 'white';
+                checkbox.style.borderColor = '#cbd5e1';
+            }
+        } else {
+            // 课程未解锁，隐藏按钮
+            homeworkBtn.style.display = 'none';
         }
     }
 
@@ -964,19 +1022,48 @@ class AILearningPlatform {
 
             console.log('Enhanced Request body:', JSON.stringify(requestBody, null, 2)); // 调试日志
 
-            const response = await fetch(`${this.difyApiUrl}/chat-messages`, {
-                method: 'POST',
-                headers: {
-                    'Authorization': `Bearer ${this.difyApiKey}`,
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(requestBody)
-            });
+            const sendRequest = async (body) => {
+                const resp = await fetch(`${this.difyApiUrl}/chat-messages`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${this.difyApiKey}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(body)
+                });
+                return resp;
+            };
+
+            let response = await sendRequest(requestBody);
 
             if (!response.ok) {
-                const errorData = await response.json();
+                let errorData;
+                try {
+                    errorData = await response.json();
+                } catch (_) {
+                    errorData = { message: response.statusText };
+                }
                 console.error('Dify API Error:', errorData);
-                throw new Error(`Dify API request failed: ${errorData.message || response.statusText}`);
+
+                const msg = (errorData.message || '').toLowerCase();
+                const isConversationProblem = response.status === 404 || response.status === 422 || msg.includes('conversation') || msg.includes('会话');
+                if (isConversationProblem && this.conversationId) {
+                    console.warn('⚠️ 会话可能已过期，自动清除并重试一次');
+                    localStorage.removeItem('difyConversationId');
+                    this.conversationId = null;
+                    delete requestBody.conversation_id;
+                    response = await sendRequest(requestBody);
+                }
+
+                if (!response.ok) {
+                    let secondError;
+                    try {
+                        secondError = await response.json();
+                    } catch (_) {
+                        secondError = { message: response.statusText };
+                    }
+                    throw new Error(`Dify API request failed: ${secondError.message || response.statusText}`);
+                }
             }
 
             const data = await response.json();
